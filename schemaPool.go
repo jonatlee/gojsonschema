@@ -32,6 +32,7 @@ import (
 	"reflect"
 
 	"github.com/xeipuuv/gojsonreference"
+	"go.mongodb.org/mongo-driver/bson"
 )
 
 type schemaPoolDocument struct {
@@ -136,6 +137,31 @@ func (p *schemaPool) parseReferencesRecursive(document interface{}, ref gojsonre
 	return nil
 }
 
+// bsonDToMap converts a bson.D to a bson.M at all nesting levels
+// we cannot use the bson.D.Map() function because that is only one level
+func bsonDToMap(doc bson.D) map[string]interface{} {
+	newDoc := map[string]interface{}{}
+	for _, entry := range doc {
+		if subDoc, ok := entry.Value.(bson.D); ok {
+			newDoc[entry.Key] = bsonDToMap(subDoc)
+		} else if arr, ok := entry.Value.([]interface{}); ok {
+			newArr := make([]interface{}, len(arr))
+			for idx, elem := range arr {
+				if doc, ok := elem.(bson.D); ok {
+					newArr[idx] = bsonDToMap(doc)
+				} else {
+					newArr[idx] = elem
+				}
+			}
+			newDoc[entry.Key] = newArr
+		} else {
+			newDoc[entry.Key] = entry.Value
+		}
+	}
+
+	return newDoc
+}
+
 func (p *schemaPool) GetDocument(reference gojsonreference.JsonReference) (*schemaPoolDocument, error) {
 
 	var (
@@ -168,6 +194,9 @@ func (p *schemaPool) GetDocument(reference gojsonreference.JsonReference) (*sche
 	refToURL.GetUrl().Fragment = ""
 
 	if cachedSpd, ok := p.schemaPoolDocuments[refToURL.String()]; ok {
+		if bsonD, ok := cachedSpd.Document.(bson.D); ok {
+			cachedSpd.Document = bsonDToMap(bsonD)
+		}
 		document, _, err := reference.GetPointer().Get(cachedSpd.Document)
 
 		if err != nil {
