@@ -332,15 +332,6 @@ func TestIncorrectRef(t *testing.T) {
 }
 
 func TestAdditionalProperties(t *testing.T) {
-	getSubSchema := func(sub *SubSchemaAccessor, propertyName string) *SubSchemaAccessor {
-		for _, childSchema := range sub.Properties() {
-			if childSchema.Name() == propertyName {
-				return childSchema
-			}
-		}
-		return nil
-	}
-
 	t.Run("additional properties set to bool should return true", func(t *testing.T) {
 		schemaDoc := bson.D{
 			{"title", "table1"},
@@ -361,9 +352,19 @@ func TestAdditionalProperties(t *testing.T) {
 			t.Errorf("Got error: %s", err.Error())
 		}
 
-		subSchema := getSubSchema(schema.Root(), "dictionary")
-		if subSchema == nil {
-			t.Errorf("Found no sub schema for 'dictionary' field: %s", err.Error())
+		properties := schema.Root().Properties()
+		if len(properties) != 2 {
+			t.Errorf("got %d properties", len(properties))
+		}
+
+		if properties[0].Name() != "_id" {
+			t.Errorf("first subschema was %q", properties[0].Name())
+		}
+
+		subSchema := properties[1]
+
+		if properties[1].Name() != "dictionary" {
+			t.Errorf("second subschema was %q", properties[1].Name())
 		}
 
 		additionalPropertiesBool, additionalPropertiesSchema := subSchema.AdditionalProperties()
@@ -395,9 +396,19 @@ func TestAdditionalProperties(t *testing.T) {
 			t.Errorf("Got error: %s", err.Error())
 		}
 
-		subSchema := getSubSchema(schema.Root(), "dictionary")
-		if subSchema == nil {
-			t.Errorf("Found no sub schema for 'dictionary' field: %s", err.Error())
+		properties := schema.Root().Properties()
+		if len(properties) != 2 {
+			t.Errorf("got %d properties", len(properties))
+		}
+
+		if properties[0].Name() != "_id" {
+			t.Errorf("first subschema was %q", properties[0].Name())
+		}
+
+		subSchema := properties[1]
+
+		if properties[1].Name() != "dictionary" {
+			t.Errorf("second subschema was %q", properties[1].Name())
 		}
 
 		additionalPropertiesBool, additionalPropertiesSchema := subSchema.AdditionalProperties()
@@ -431,9 +442,19 @@ func TestAdditionalProperties(t *testing.T) {
 			t.Errorf("Got error: %s", err.Error())
 		}
 
-		subSchema := getSubSchema(schema.Root(), "dictionary")
-		if subSchema == nil {
-			t.Errorf("Found no sub schema for 'dictionary' field: %s", err.Error())
+		properties := schema.Root().Properties()
+		if len(properties) != 2 {
+			t.Errorf("got %d properties", len(properties))
+		}
+
+		if properties[0].Name() != "_id" {
+			t.Errorf("first subschema was %q", properties[0].Name())
+		}
+
+		subSchema := properties[1]
+
+		if properties[1].Name() != "dictionary" {
+			t.Errorf("second subschema was %q", properties[1].Name())
 		}
 
 		additionalPropertiesBool, additionalPropertiesSchema := subSchema.AdditionalProperties()

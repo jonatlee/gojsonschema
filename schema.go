@@ -1105,7 +1105,23 @@ func (d *Schema) parseReference(documentNode interface{}, currentSchema *subSche
 
 }
 
+func (d *Schema) parseProperty(key string, value interface{}, currentSchema *subSchema) error {
+	newSchema := NewSubSchema(key, currentSchema)
+	currentSchema.AddPropertiesChild(newSchema)
+
+	return d.parseSchema(value, newSchema)
+}
+
 func (d *Schema) parseProperties(documentNode interface{}, currentSchema *subSchema) error {
+	if bsonD, ok := documentNode.(bson.D); ok {
+		// preserve order
+		for _, e := range bsonD {
+			if err := d.parseProperty(e.Key, e.Value, currentSchema); err != nil {
+				return err
+			}
+		}
+		return nil
+	}
 
 	m, err := mustBeMap(documentNode)
 	if err != nil {
@@ -1113,11 +1129,7 @@ func (d *Schema) parseProperties(documentNode interface{}, currentSchema *subSch
 	}
 
 	for k := range m {
-		newSchema := NewSubSchema(k, currentSchema)
-		currentSchema.AddPropertiesChild(newSchema)
-
-		err := d.parseSchema(m[k], newSchema)
-		if err != nil {
+		if err := d.parseProperty(k, m[k], currentSchema); err != nil {
 			return err
 		}
 	}
