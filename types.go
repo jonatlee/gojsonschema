@@ -46,6 +46,7 @@ const (
 	TYPE_BINARY     = `binData`
 	TYPE_UUID       = `uuid`
 	TYPE_MIXED      = `mixed`
+	TYPE_FLOAT      = `float`
 )
 
 // JSON_TYPES hosts the list of type that are supported in JSON
@@ -91,5 +92,6 @@ func init() {
 		TYPE_NUMBER,
 		TYPE_BINARY,
 		TYPE_UUID,
-		TYPE_MIXED}
+		TYPE_MIXED,
+		TYPE_FLOAT}
 }

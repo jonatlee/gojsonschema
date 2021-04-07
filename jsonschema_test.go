@@ -335,6 +335,7 @@ var possibleMixedTypes = []string{
 	TYPE_DECIMAL128,
 	TYPE_BINARY,
 	TYPE_UUID,
+	TYPE_FLOAT,
 	"typed_link",
 }
 
@@ -346,6 +347,8 @@ func getTestData(inputType string) interface{} {
 		return 1
 	case TYPE_DOUBLE:
 		return 1.1
+	case TYPE_FLOAT:
+		return float32(1.1)
 	case TYPE_STRING:
 		return "foo"
 	case TYPE_OBJECT:
@@ -417,6 +420,7 @@ func testCases() []jsonSchemaTest {
 				bsonTypeTestCase(TYPE_BINARY, TYPE_OBJECT_ID, false),
 				bsonTypeTestCase(TYPE_UUID, TYPE_OBJECT_ID, false),
 				bsonTypeTestCase("typed_link", TYPE_OBJECT_ID, false),
+				bsonTypeTestCase(TYPE_FLOAT, TYPE_OBJECT_ID, false),
 			},
 		},
 		{
@@ -437,6 +441,7 @@ func testCases() []jsonSchemaTest {
 				bsonTypeTestCase(TYPE_BINARY, TYPE_DOUBLE, false),
 				bsonTypeTestCase(TYPE_UUID, TYPE_DOUBLE, false),
 				bsonTypeTestCase("typed_link", TYPE_DOUBLE, false),
+				bsonTypeTestCase(TYPE_FLOAT, TYPE_DOUBLE, true),
 			},
 		},
 		{
@@ -457,6 +462,7 @@ func testCases() []jsonSchemaTest {
 				bsonTypeTestCase(TYPE_BINARY, TYPE_STRING, false),
 				bsonTypeTestCase(TYPE_UUID, TYPE_STRING, false),
 				bsonTypeTestCase("typed_link", TYPE_STRING, false),
+				bsonTypeTestCase(TYPE_FLOAT, TYPE_STRING, false),
 			},
 		},
 		{
@@ -478,6 +484,7 @@ func testCases() []jsonSchemaTest {
 				bsonTypeTestCase(TYPE_BINARY, TYPE_ARRAY, false),
 				bsonTypeTestCase(TYPE_UUID, TYPE_ARRAY, false),
 				bsonTypeTestCase("typed_link", TYPE_ARRAY, false),
+				bsonTypeTestCase(TYPE_FLOAT, TYPE_ARRAY, false),
 			},
 		},
 		{
@@ -499,6 +506,7 @@ func testCases() []jsonSchemaTest {
 				bsonTypeTestCase(TYPE_BINARY, TYPE_OBJECT, false),
 				bsonTypeTestCase(TYPE_UUID, TYPE_OBJECT, false),
 				bsonTypeTestCase("typed_link", TYPE_OBJECT, true),
+				bsonTypeTestCase(TYPE_FLOAT, TYPE_OBJECT, false),
 			},
 		},
 		{
@@ -521,6 +529,7 @@ func testCases() []jsonSchemaTest {
 				bsonTypeTestCase(TYPE_BINARY, TYPE_BOOL, false),
 				bsonTypeTestCase(TYPE_UUID, TYPE_BOOL, false),
 				bsonTypeTestCase("typed_link", TYPE_BOOL, false),
+				bsonTypeTestCase(TYPE_FLOAT, TYPE_BOOL, false),
 			},
 		},
 		{
@@ -542,6 +551,7 @@ func testCases() []jsonSchemaTest {
 				bsonTypeTestCase(TYPE_BINARY, TYPE_DATE, false),
 				bsonTypeTestCase(TYPE_UUID, TYPE_DATE, false),
 				bsonTypeTestCase("typed_link", TYPE_DATE, false),
+				bsonTypeTestCase(TYPE_FLOAT, TYPE_DATE, false),
 			},
 		},
 		{
@@ -563,6 +573,7 @@ func testCases() []jsonSchemaTest {
 				bsonTypeTestCase(TYPE_BINARY, TYPE_NULL, false),
 				bsonTypeTestCase(TYPE_UUID, TYPE_NULL, false),
 				bsonTypeTestCase("typed_link", TYPE_NULL, false),
+				bsonTypeTestCase(TYPE_FLOAT, TYPE_NULL, false),
 			},
 		},
 		{
@@ -584,6 +595,7 @@ func testCases() []jsonSchemaTest {
 				bsonTypeTestCase(TYPE_BINARY, TYPE_REGEX, false),
 				bsonTypeTestCase(TYPE_UUID, TYPE_REGEX, false),
 				bsonTypeTestCase("typed_link", TYPE_REGEX, false),
+				bsonTypeTestCase(TYPE_FLOAT, TYPE_REGEX, false),
 			},
 		},
 		{
@@ -606,6 +618,7 @@ func testCases() []jsonSchemaTest {
 				bsonTypeTestCase(TYPE_BINARY, TYPE_INT32, false),
 				bsonTypeTestCase(TYPE_UUID, TYPE_INT32, false),
 				bsonTypeTestCase("typed_link", TYPE_INT32, false),
+				bsonTypeTestCase(TYPE_FLOAT, TYPE_INT32, false),
 			},
 		},
 		{
@@ -628,6 +641,7 @@ func testCases() []jsonSchemaTest {
 				bsonTypeTestCase(TYPE_BINARY, TYPE_TIMESTAMP, false),
 				bsonTypeTestCase(TYPE_UUID, TYPE_TIMESTAMP, false),
 				bsonTypeTestCase("typed_link", TYPE_TIMESTAMP, false),
+				bsonTypeTestCase(TYPE_FLOAT, TYPE_TIMESTAMP, false),
 			},
 		},
 		{
@@ -650,6 +664,7 @@ func testCases() []jsonSchemaTest {
 				bsonTypeTestCase(TYPE_BINARY, TYPE_INT64, false),
 				bsonTypeTestCase(TYPE_UUID, TYPE_INT64, false),
 				bsonTypeTestCase("typed_link", TYPE_INT64, false),
+				bsonTypeTestCase(TYPE_FLOAT, TYPE_INT64, false),
 			},
 		},
 		{
@@ -672,6 +687,7 @@ func testCases() []jsonSchemaTest {
 				bsonTypeTestCase(TYPE_BINARY, TYPE_DECIMAL128, false),
 				bsonTypeTestCase(TYPE_UUID, TYPE_DECIMAL128, false),
 				bsonTypeTestCase("typed_link", TYPE_DECIMAL128, false),
+				bsonTypeTestCase(TYPE_FLOAT, TYPE_DECIMAL128, false),
 			},
 		},
 		{
@@ -694,6 +710,30 @@ func testCases() []jsonSchemaTest {
 				bsonTypeTestCase(TYPE_BINARY, TYPE_NUMBER, false),
 				bsonTypeTestCase(TYPE_UUID, TYPE_NUMBER, false),
 				bsonTypeTestCase("typed_link", TYPE_NUMBER, false),
+				bsonTypeTestCase(TYPE_FLOAT, TYPE_NUMBER, true),
+			},
+		},
+		{
+			Description: "float type matches float",
+			Schema:      map[string]interface{}{"bsonType": "float"},
+			Tests: []jsonSchemaTestCase{
+				bsonTypeTestCase(TYPE_OBJECT_ID, TYPE_FLOAT, false),
+				bsonTypeTestCase(TYPE_INT32, TYPE_FLOAT, false),
+				bsonTypeTestCase(TYPE_DOUBLE, TYPE_FLOAT, true),
+				bsonTypeTestCase(TYPE_STRING, TYPE_FLOAT, false),
+				bsonTypeTestCase(TYPE_OBJECT, TYPE_FLOAT, false),
+				bsonTypeTestCase(TYPE_ARRAY, TYPE_FLOAT, false),
+				bsonTypeTestCase(TYPE_BOOL, TYPE_FLOAT, false),
+				bsonTypeTestCase(TYPE_NULL, TYPE_FLOAT, false),
+				bsonTypeTestCase(TYPE_REGEX, TYPE_FLOAT, false),
+				bsonTypeTestCase(TYPE_DATE, TYPE_FLOAT, false),
+				bsonTypeTestCase(TYPE_DECIMAL128, TYPE_FLOAT, false),
+				bsonTypeTestCase("bson.D", TYPE_FLOAT, false),
+				bsonTypeTestCase(TYPE_TIMESTAMP, TYPE_FLOAT, false),
+				bsonTypeTestCase(TYPE_BINARY, TYPE_FLOAT, false),
+				bsonTypeTestCase(TYPE_UUID, TYPE_FLOAT, false),
+				bsonTypeTestCase("typed_link", TYPE_FLOAT, false),
+				bsonTypeTestCase(TYPE_FLOAT, TYPE_FLOAT, true),
 			},
 		},
 		{
@@ -716,6 +756,7 @@ func testCases() []jsonSchemaTest {
 				bsonTypeTestCase(TYPE_BINARY, TYPE_BINARY, true),
 				bsonTypeTestCase(TYPE_UUID, TYPE_BINARY, true),
 				bsonTypeTestCase("typed_link", TYPE_BINARY, false),
+				bsonTypeTestCase(TYPE_FLOAT, TYPE_BINARY, false),
 			},
 		},
 		{
@@ -738,6 +779,7 @@ func testCases() []jsonSchemaTest {
 				bsonTypeTestCase(TYPE_BINARY, TYPE_UUID, false),
 				bsonTypeTestCase(TYPE_UUID, TYPE_UUID, true),
 				bsonTypeTestCase("typed_link", TYPE_UUID, false),
+				bsonTypeTestCase(TYPE_FLOAT, TYPE_UUID, false),
 				{
 					Data: primitive.Binary{
 						Subtype: 2,
@@ -777,6 +819,7 @@ func testCases() []jsonSchemaTest {
 				bsonTypeTestCase(TYPE_BINARY, TYPE_MIXED, true),
 				bsonTypeTestCase(TYPE_UUID, TYPE_MIXED, true),
 				bsonTypeTestCase("typed_link", TYPE_MIXED, true),
+				bsonTypeTestCase(TYPE_FLOAT, TYPE_MIXED, true),
 				{
 					Data: bson.D{
 						{"$ref", "collName"},

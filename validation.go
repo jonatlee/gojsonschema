@@ -185,7 +185,7 @@ func (v *subSchema) validateRecursive(currentSubSchema *subSchema, currentNode i
 			}
 			value = cn
 		case float32, float64:
-			if !currentSubSchema.containsValidType(currentNode, result, context, TYPE_DOUBLE, TYPE_NUMBER, TYPE_MIXED) {
+			if !currentSubSchema.containsValidType(currentNode, result, context, TYPE_DOUBLE, TYPE_NUMBER, TYPE_FLOAT, TYPE_MIXED) {
 				return
 			}
 			value = cn
