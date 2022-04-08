@@ -459,7 +459,11 @@ func (d *Schema) parseSchema(documentNode interface{}, currentSchema *subSchema)
 	// items
 	if existsMapKey(m, KEY_ITEMS) {
 		if isKind(m[KEY_ITEMS], reflect.Slice) {
-			for _, itemElement := range m[KEY_ITEMS].([]interface{}) {
+			itemElements, ok := m[KEY_ITEMS].([]interface{})
+			if !ok {
+				return errors.New("items value is not an []interface{}")
+			}
+			for _, itemElement := range itemElements {
 				if isKind(itemElement, reflect.Map, reflect.Bool) {
 					newSchema := NewSubSchema(KEY_ITEMS, currentSchema)
 					currentSchema.AddItemsChild(newSchema)
