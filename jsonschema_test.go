@@ -28,10 +28,10 @@ import (
 	"testing"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/x/mongo/driver/uuid"
 )
 
 type jsonSchemaTest struct {
@@ -311,7 +311,7 @@ func validateTestCase(description string, data interface{}, shouldMatch bool, va
 }
 
 func newUUID() []byte {
-	uuidRet, err := uuid.New()
+	uuidRet, err := uuid.NewRandom()
 	if err != nil {
 		panic(err)
 	}
