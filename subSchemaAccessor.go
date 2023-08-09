@@ -110,3 +110,11 @@ func (s *SubSchemaAccessor) Type() *string {
 func (s *SubSchemaAccessor) Default() interface{} {
 	return s.schema.defaultValue
 }
+
+func (s *SubSchemaAccessor) MinItems() *int {
+	return s.schema.minItems
+}
+
+func (s *SubSchemaAccessor) MaxItems() *int {
+	return s.schema.maxItems
+}
